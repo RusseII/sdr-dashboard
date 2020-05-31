@@ -32,25 +32,25 @@ const BasicForm = () => {
   }, [])
 
   return (
-    <PageHeaderWrapper content="Check in on your progress each day to your goal. ">
-      <Button type="primary" onClick={runReport}>
-        Refresh!!!
-      </Button>
+    <PageHeaderWrapper extraContent={<Button type="primary" onClick={runReport}>
+      Refresh!!!
+  </Button>} content="Check in on your progress each day to your goal. ">
+
 
       <Row gutter={16}>
         <Col span={8}>
-          <Card title="Calls" bordered={false}>
+          <Card bordered={false}>
             <Statistic title="Calls Made" value={callsMade} />
           </Card>
         </Col>
         <Col span={8}>
-          <Card title="Appointments Set" bordered={false}>
-            TEST
+          <Card bordered={false}>
+            <Statistic title="Appointments Set" value={333} />
           </Card>
         </Col>
         <Col span={8}>
-          <Card title="Dispositions" bordered={false}>
-            Card content
+          <Card bordered={false}>
+            <Statistic title="Dispositions" value={2} />
           </Card>
         </Col>
       </Row>
