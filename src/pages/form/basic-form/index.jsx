@@ -1,50 +1,36 @@
-import { InfoCircleOutlined } from '@ant-design/icons';
 import {
-  Typography,
   Button,
   Card,
-  DatePicker,
-  Input,
-  Form,
-  InputNumber,
-  Radio,
-  Select,
-  Tooltip,
   Row,
   Col,
+  Statistic
 } from 'antd';
-import axios from 'axios';
 
-import { connect, FormattedMessage, formatMessage } from 'umi';
+import { connect } from 'umi';
 import React, { useState, useEffect } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import styles from './style.less';
 
-const { Title } = Typography;
+import { getOutreachCalls } from '@/services/api';
 
-const FormItem = Form.Item;
-const { Option } = Select;
-const { RangePicker } = DatePicker;
-const { TextArea } = Input;
 
-const BasicForm = (props) => {
+const BasicForm = () => {
   const [callsMade, setCallsMade] = useState(0);
 
   const runReport = async () => {
-    axios
-      .get(
-        'https://cors-anywhere.herokuapp.com/https://api.outreach.io/api/v2/calls?filter[updatedAt]=2020-05-29..inf'
-      )
-      .then((result) => {
-        console.log(result);
-      });
-    //   setCallsMade(result.data);
+    const outreachCalls = await getOutreachCalls()
+    const data = outreachCalls
+    // do things with the outreach data here 
+    // outreachCallsD
 
+    //   setCallsMade(result.data);
     setCallsMade(callsMade + 1);
   };
 
-        
-  
+  // this runs the first time the page loads and runs the report
+  useEffect(() => {
+    runReport()
+  }, [])
+
   return (
     <PageHeaderWrapper content="Check in on your progress each day to your goal. ">
       <Button type="primary" onClick={runReport}>
@@ -54,7 +40,7 @@ const BasicForm = (props) => {
       <Row gutter={16}>
         <Col span={8}>
           <Card title="Calls" bordered={false}>
-            Calls Made: <Title>{callsMade}</Title>
+            <Statistic title="Calls Made" value={callsMade} />
           </Card>
         </Col>
         <Col span={8}>
