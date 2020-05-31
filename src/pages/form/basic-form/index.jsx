@@ -33,9 +33,7 @@ const BasicForm = (props) => {
   const runReport = async () => {
     axios
       .get(
-        'www.google.com',
-        // 'https://hn.algolia.com/api/v1/search?query=redux',
-        // 'https://api.outreach.io/api/v2/calls?filter[updatedAt]=2020-05-29..inf',
+        'https://cors-anywhere.herokuapp.com/https://api.outreach.io/api/v2/calls?filter[updatedAt]=2020-05-29..inf'
       )
       .then((result) => {
         console.log(result);
@@ -45,6 +43,8 @@ const BasicForm = (props) => {
     setCallsMade(callsMade + 1);
   };
 
+        
+  
   return (
     <PageHeaderWrapper content="Check in on your progress each day to your goal. ">
       <Button type="primary" onClick={runReport}>
