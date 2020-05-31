@@ -3,12 +3,6 @@
   "version": "4.0.0",
   "private": true,
   "description": "An out-of-box UI solution for enterprise applications",
-  "proxy": {
-    "/search": {
-      "target": "https://api.outreach.io/api/v2",
-      "changeOrigin": true
-	}
-},
   "scripts": {
     "analyze": "cross-env ANALYZE=1 umi build",
     "build": "umi build",
