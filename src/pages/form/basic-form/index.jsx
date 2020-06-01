@@ -12,9 +12,15 @@ const BasicForm = () => {
   const [repData, setRepData] = useState({calls: 0, dispositions: 0, appointments: 0});
   const [selectedUser, setSelectedUser] = useState(2);
   const [allTeamData, setAllTeamData] = useState();
+
   const updateDashboard = (userId) => {
     console.log(allTeamData);
-    // const myData = allTeamData.data.filter((val) => val.relationships.user.data === userId);
+    const selectedRepData = allTeamData.data.filter((val) => val.relationships.user.data === userId);
+   // i'm not really sure what the logic below this does
+   // you should put the logic in this function that figures out calls, dispositions, and appointmens
+   // then set it with `setRepData({calls: 5, dispositions: 5, appointments, 5})`
+   // to set just one value, do `setRepData({...repData, calls: 6})` 
+   
     /* let displayedData = [];
 	let newData = allTeamData.data.relationships.data.user.data.id;
 	allTeamData.data.forEach(function(newData){
@@ -63,8 +69,7 @@ const BasicForm = () => {
 
     // updateDashboard(2);
 
-    // do things with the outreach data here
-    // outreachCallsD
+
     //   setRepData(result.data);
 
     // setRepData(data.meta.count);
@@ -94,7 +99,7 @@ const BasicForm = () => {
       }
       content="Check in on your progress each day to your goal. "
     >
-      <Select defaultValue="Cameron" style={{ width: 120 }} onChange={setSelectedUser}>
+      <Select defaultValue="Cameron" style={{ width: 120, marginBottom: 24 }} onChange={setSelectedUser}>
         <Option value="2">Cameron</Option>
         <Option value="3">Mikey</Option>
       </Select>
