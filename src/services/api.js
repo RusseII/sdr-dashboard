@@ -4,8 +4,9 @@ import request from '@/utils/request';
 // cors-anywhere runs server side, and just mimics the api call you send it
 // then returns back to data
 const outreachUrl = 'https://cors-anywhere.herokuapp.com/';
-const token =
-  'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdGV2ZW5AZGVlcGhpcmUuY29tIiwiaWF0IjoxNTkwOTcxNjY1LCJleHAiOjE1OTA5Nzg4NjUsImJlbnRvIjoiYXBwMmIiLCJvcmdfdXNlcl9pZCI6MSwiYXVkIjoiRGVlcEhpcmUiLCJzY29wZXMiOiJBQkFBUUE9PSJ9.XbqvVN_vbChiIjaFCGNuGNB7tWoGdnog_QxhaTFwyQE';
+const access_token =
+  'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdGV2ZW5AZGVlcGhpcmUuY29tIiwiaWF0IjoxNTkxMDIxOTQ1LCJleHAiOjE1OTEwMjkxNDUsImJlbnRvIjoiYXBwMmIiLCJvcmdfdXNlcl9pZCI6MSwiYXVkIjoiRGVlcEhpcmUiLCJzY29wZXMiOiJBQkFBUUE9PSJ9.KPEADvPCVamUdCTde5I2_v321Sg3Ur-YbaNfGedC8DE';
+const token = `Bearer ${access_token}`;
 
 const headers = {
   authorization: token,
