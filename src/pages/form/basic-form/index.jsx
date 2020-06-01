@@ -9,31 +9,31 @@ import { getOutreachCalls } from '@/services/api';
 const { Option } = Select;
 
 const BasicForm = () => {
-  const [callsMade, setCallsMade] = useState(0);
+  const [repData, setRepData] = useState({calls: 0, dispositions: 0, appointments: 0});
   const [selectedUser, setSelectedUser] = useState(2);
-  const [teamData, setTeamData] = useState();
+  const [allTeamData, setAllTeamData] = useState();
   const updateDashboard = (userId) => {
-    console.log(teamData);
-    // const myData = teamData.data.filter((val) => val.relationships.user.data === userId);
+    console.log(allTeamData);
+    // const myData = allTeamData.data.filter((val) => val.relationships.user.data === userId);
     /* let displayedData = [];
-	let newData = teamData.data.relationships.data.user.data.id;
-	teamData.data.forEach(function(newData){
+	let newData = allTeamData.data.relationships.data.user.data.id;
+	allTeamData.data.forEach(function(newData){
 		if(newData === userId){
 			displayedData.push()
 		}
 	};
-	setCallsMade(teamData.meta.count);
+	setRepData(allTeamData.meta.count);
 	
 
 	}
-	setCallsMade(teamData.data) */
+	setRepData(allTeamData.data) */
   };
 
-  function handleChange(value) {
-    console.log(`selected ${value}`);
-    setSelectedUser(value);
-    updateDashboard(value);
-  }
+  // function handleChange(value) {
+  //   console.log(`selected ${value}`);
+  //   setSelectedUser(value);
+  //   updateDashboard(value);
+  // }
 
   const runReport = async () => {
     const initial_url = `https://api.outreach.io/api/v2/calls?filter[updatedAt]=2020-05-29..inf`;
@@ -58,24 +58,32 @@ const BasicForm = () => {
       } while (pageData.links.next);
     }
     // console.log(data);
-    useEffect(() => {
-      console.log(teamData);
-    }, [teamData]);
-    setTeamData(data);
+
+    setAllTeamData(data);
 
     // updateDashboard(2);
 
     // do things with the outreach data here
     // outreachCallsD
-    //   setCallsMade(result.data);
+    //   setRepData(result.data);
 
-    // setCallsMade(data.meta.count);
+    // setRepData(data.meta.count);
   };
+
 
   // this runs the first time the page loads and runs the report
   useEffect(() => {
     runReport();
   }, []);
+
+  useEffect(() => {
+    if (allTeamData) {
+      updateDashboard(selectedUser)
+    }
+  }, [selectedUser, allTeamData]);
+
+
+
 
   return (
     <PageHeaderWrapper
@@ -86,24 +94,24 @@ const BasicForm = () => {
       }
       content="Check in on your progress each day to your goal. "
     >
-      <Select defaultValue="Cameron" style={{ width: 120 }} onChange={handleChange}>
+      <Select defaultValue="Cameron" style={{ width: 120 }} onChange={setSelectedUser}>
         <Option value="2">Cameron</Option>
         <Option value="3">Mikey</Option>
       </Select>
       <Row gutter={16}>
         <Col span={8}>
           <Card bordered={false}>
-            <Statistic title="Calls Made" value={callsMade} />
+            <Statistic title="Calls Made" value={repData.calls} />
           </Card>
         </Col>
         <Col span={8}>
           <Card bordered={false}>
-            <Statistic title="Appointments Set" value={333} />
+            <Statistic title="Appointments Set" value={repData.appointments} />
           </Card>
         </Col>
         <Col span={8}>
           <Card bordered={false}>
-            <Statistic title="Dispositions" value={2} />
+            <Statistic title="Dispositions" value={repData.dispositions} />
           </Card>
         </Col>
       </Row>
@@ -114,3 +122,5 @@ const BasicForm = () => {
 export default connect(({ loading }) => ({
   submitting: loading.effects['formAndbasicForm/submitRegularForm'],
 }))(BasicForm);
+
+
