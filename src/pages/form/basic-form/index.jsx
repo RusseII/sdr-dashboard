@@ -5,36 +5,33 @@ import React, { useState, useEffect } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 import { getOutreachCalls } from '@/services/api';
+import allTeamData1 from './data.json';
 
 const { Option } = Select;
 
 const BasicForm = () => {
   const [repData, setRepData] = useState({ calls: 0, dispositions: 0, appointments: 0 });
   const [selectedUser, setSelectedUser] = useState(2);
-  const [allTeamData, setAllTeamData] = useState();
+  const [allTeamData, setAllTeamData] = useState(allTeamData1);
 
   const updateDashboard = (userId) => {
+    console.log(userId);
     console.log(allTeamData);
+
     const selectedRepData = allTeamData.data.filter(
-      (val) => val.relationships.user.data === userId,
+      (val) => val.relationships.user.data.id === parseInt(userId),
     );
+    const selectedRepDispositionData = allTeamData.data.filter(
+      (val) => val.relationships.callDisposition.data.id === 3,
+    );
+    console.log(selectedRepDispositionData);
+
+    setRepData({ ...repData, calls: selectedRepData.length });
+    setRepData({ ...repData, appointments: selectedRepDispositionData.length });
     // i'm not really sure what the logic below this does
     // you should put the logic in this function that figures out calls, dispositions, and appointmens
     // then set it with `setRepData({calls: 5, dispositions: 5, appointments, 5})`
     // to set just one value, do `setRepData({...repData, calls: 6})`
-
-    /* let displayedData = [];
-	let newData = allTeamData.data.relationships.data.user.data.id;
-	allTeamData.data.forEach(function(newData){
-		if(newData === userId){
-			displayedData.push()
-		}
-	};
-	setRepData(allTeamData.meta.count);
-	
-
-	}
-	setRepData(allTeamData.data) */
   };
 
   // function handleChange(value) {
@@ -44,7 +41,7 @@ const BasicForm = () => {
   // }
 
   const runReport = async () => {
-    const initial_url = `https://api.outreach.io/api/v2/calls?filter[updatedAt]=2020-05-29..inf`;
+    const initial_url = `https://api.outreach.io/api/v2/calls?filter[updatedAt]=2020-06-02..inf`;
     // const initial_url = `https://api.outreach.io/api/v2/calls?filter%5BupdatedAt%5D=2020-05-29..inf&page%5Boffset%5D=300`;
     const outreachCalls = await getOutreachCalls(initial_url);
 
@@ -69,7 +66,7 @@ const BasicForm = () => {
 
     setAllTeamData(data);
 
-    updateDashboard(2);
+    // updateDashboard(2);
 
     //   setRepData(result.data);
 
@@ -78,7 +75,7 @@ const BasicForm = () => {
 
   // this runs the first time the page loads and runs the report
   useEffect(() => {
-    runReport();
+    // runReport();
   }, []);
 
   useEffect(() => {
