@@ -17,27 +17,30 @@ const BasicForm = () => {
   const [repData, setRepData] = useState({ calls: 0, appointments: 0 });
   const [selectedUser, setSelectedUser] = useState(2);
   const [allTeamData, setAllTeamData] = useState(allTeamData1);
-  const [allTeamOpportunities, setAllTeamOpportunities] = useState(0);
+  const [allTeamOpportunities, setAllTeamOpportunities] = useState(null);
 
   const updateDashboard = (userId) => {
+    let selectedRepData = []
+    let selectedRepDataOpportunities = []
     console.log(`${userId}HELLO`);
-    // console.log(allTeamData);
 
-    const selectedRepData = allTeamData.data.filter(
-      (val) => val.relationships.user.data.id === parseInt(userId),
-    );
+    if (allTeamData?.data) {
+      selectedRepData = allTeamData.data.filter(
+        (val) => val.relationships.user.data.id === parseInt(userId, 10),
+      );
+    }
 
-    // const selectedRepDataOpportunities = allTeamOpportunities.data.filter(
-    //   (val) => val.relationships.creator.data.id === parseInt(userId),
-    // );
-    // console.log(selectedRepDataOpportunities);
+    // the error you were getting was due to allTeamOpportunities.data sometimes being undefined. Then you would get error (can't use .filter on undefined)
+    // this would happen the first time updateDashboard got ran
+    if (allTeamOpportunities?.data) {
+        selectedRepDataOpportunities = allTeamOpportunities.data.filter(
+        (val) => val.relationships.creator.data.id === parseInt(userId, 10),
+      )
+    }
 
-    // setRepData({ ...repData, calls: selectedRepData.length });
-    // setRepData({ ...repData, appointments: apptsForUser.length });
-    // i'm not really sure what the logic below this does
-    // you should put the logic in this function that figures out calls, dispositions, and appointmens
-    // then set it with `setRepData({calls: 5, dispositions: 5, appointments, 5})`
-    // to set just one value, do `setRepData({...repData, calls: 6})`
+    const calls = selectedRepData.length
+    const appointments = selectedRepDataOpportunities.length
+    setRepData({ ...repData, calls, appointments });
   };
 
   const runReport = async () => {
@@ -103,10 +106,10 @@ const BasicForm = () => {
   }, []);
 
   useEffect(() => {
-    if (allTeamData) {
+    if (allTeamData && allTeamOpportunities) {
       updateDashboard(selectedUser);
     }
-  }, [selectedUser, allTeamData]);
+  }, [selectedUser, allTeamData, allTeamOpportunities]);
 
   return (
     <PageHeaderWrapper
