@@ -4,46 +4,50 @@ import { connect } from 'umi';
 import React, { useState, useEffect } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-import { getOutreachCalls } from '@/services/api';
+import {
+  getOutreachCalls,
+  getOutreachDispositions,
+  getOutreachOpportunities,
+} from '@/services/api';
 import allTeamData1 from './data.json';
 
 const { Option } = Select;
 
 const BasicForm = () => {
-  const [repData, setRepData] = useState({ calls: 0, dispositions: 0, appointments: 0 });
+  const [repData, setRepData] = useState({ calls: 0, appointments: 0 });
   const [selectedUser, setSelectedUser] = useState(2);
   const [allTeamData, setAllTeamData] = useState(allTeamData1);
+  const [allTeamOpportunities, setAllTeamOpportunities] = useState(0);
 
   const updateDashboard = (userId) => {
-    console.log(userId);
-    console.log(allTeamData);
+    console.log(`${userId}HELLO`);
+    // console.log(allTeamData);
 
     const selectedRepData = allTeamData.data.filter(
       (val) => val.relationships.user.data.id === parseInt(userId),
     );
-    const selectedRepDispositionData = allTeamData.data.filter(
-      (val) => val.relationships.callDisposition.data.id === 3,
-    );
-    console.log(selectedRepDispositionData);
 
-    setRepData({ ...repData, calls: selectedRepData.length });
-    setRepData({ ...repData, appointments: selectedRepDispositionData.length });
+    // const selectedRepDataOpportunities = allTeamOpportunities.data.filter(
+    //   (val) => val.relationships.creator.data.id === parseInt(userId),
+    // );
+    // console.log(selectedRepDataOpportunities);
+
+    // setRepData({ ...repData, calls: selectedRepData.length });
+    // setRepData({ ...repData, appointments: apptsForUser.length });
     // i'm not really sure what the logic below this does
     // you should put the logic in this function that figures out calls, dispositions, and appointmens
     // then set it with `setRepData({calls: 5, dispositions: 5, appointments, 5})`
     // to set just one value, do `setRepData({...repData, calls: 6})`
   };
 
-  // function handleChange(value) {
-  //   console.log(`selected ${value}`);
-  //   setSelectedUser(value);
-  //   updateDashboard(value);
-  // }
-
   const runReport = async () => {
-    const initial_url = `https://api.outreach.io/api/v2/calls?filter[updatedAt]=2020-06-02..inf`;
-    // const initial_url = `https://api.outreach.io/api/v2/calls?filter%5BupdatedAt%5D=2020-05-29..inf&page%5Boffset%5D=300`;
-    const outreachCalls = await getOutreachCalls(initial_url);
+    console.log('HELLO');
+    const initialCallsUrl = `https://api.outreach.io/api/v2/calls?filter[updatedAt]=2020-06-02..inf`;
+    const outreachCalls = await getOutreachCalls(initialCallsUrl);
+    // const initialDispositionsUrl = `https://api.outreach.io/api/v2/callDispositions`;
+    // const outreachDispositions = await getOutreachDispositions(initialDispositionsUrl);
+    const initialOpportunitiesUrl = `https://api.outreach.io/api/v2/opportunities?filter[createdAt]=2020-06-02..inf`;
+    const outreachOpportunities = await getOutreachOpportunities(initialOpportunitiesUrl);
 
     const data = outreachCalls;
     console.log(data);
@@ -64,7 +68,27 @@ const BasicForm = () => {
     }
     // console.log(data);
 
+    // get all opportunities
+    const dataOpps = outreachOpportunities;
+    console.log(dataOpps);
+    /*
+    // start paginating
+    let urlOpps = dataOpps.links.next;
+    let pageDataOpps = '';
+    console.log('checking opportunities');
+    if (urlOpps) {
+      do {
+        pageDataOpps = await getOutreachOpportunities(urlOps);
+        // data.data.push(pageData.data);
+        // data.data.concat(pageData.data);
+        dataOpps.data = [...dataOpps.data, ...pageDataOpps.data];
+        urlOpps = pageDataOpps.links.next;
+        console.log(pageDataOpps);
+      } while (pageDataOpps.links.next);
+    }
+    console.log(dataOpps); */
     setAllTeamData(data);
+    setAllTeamOpportunities(dataOpps);
 
     // updateDashboard(2);
 
@@ -75,7 +99,7 @@ const BasicForm = () => {
 
   // this runs the first time the page loads and runs the report
   useEffect(() => {
-    // runReport();
+    runReport();
   }, []);
 
   useEffect(() => {
