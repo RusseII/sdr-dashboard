@@ -1,8 +1,9 @@
-import { Button, Card, Row, Col, Statistic, Select, Skeleton } from 'antd';
+import { Button, Card, Row, Col, Statistic, Select, Skeleton, DatePicker } from 'antd';
 
 import { connect } from 'umi';
 import React, { useState, useEffect } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import moment from 'moment';
 
 import {
   getOutreachCalls,
@@ -11,14 +12,24 @@ import {
 } from '@/services/api';
 import allTeamData1 from './data.json';
 
+
+
+
+const starterRepData = { calls: null, appointments: null, dispositions: null }
+
+
+// format('YYYY-MM-DD')
+
+
 const { Option } = Select;
 
 const BasicForm = () => {
-  const [repData, setRepData] = useState({ calls: null, appointments: null, dispositions: null });
+  const [repData, setRepData] = useState(starterRepData);
   const [selectedUser, setSelectedUser] = useState(2);
   const [allTeamData, setAllTeamData] = useState(allTeamData1);
   const [allTeamOpportunities, setAllTeamOpportunities] = useState(null);
-
+  const [selectedDates, setSelectedDates] = useState([moment().startOf('week'), moment()])
+ 
   const updateDashboard = (userId) => {
     let selectedRepData = []
     let selectedRepDataOpportunities = []
@@ -45,18 +56,18 @@ const BasicForm = () => {
 
   const runReport = async () => {
     console.log('HELLO');
-    const initialCallsUrl = `https://api.outreach.io/api/v2/calls?filter[updatedAt]=2020-06-02..inf&page[limit]=1000`;
+    const initialCallsUrl = `https://api.outreach.io/api/v2/calls?filter[updatedAt]=${selectedDates[0].format('YYYY-MM-DD')}..${selectedDates[1].format('YYYY-MM-DD')}&page[limit]=1000`;
     const outreachCalls = await getOutreachCalls(initialCallsUrl);
     // const initialDispositionsUrl = `https://api.outreach.io/api/v2/callDispositions`;
     // const outreachDispositions = await getOutreachDispositions(initialDispositionsUrl);
-    const initialOpportunitiesUrl = `https://api.outreach.io/api/v2/opportunities?filter[createdAt]=2020-06-02..inf&page[limit]=1000`;
+    const initialOpportunitiesUrl = `https://api.outreach.io/api/v2/opportunities?filter[createdAt]=${selectedDates[0].format('YYYY-MM-DD')}..${selectedDates[1].format('YYYY-MM-DD')}&page[limit]=1000`;
     const outreachOpportunities = await getOutreachOpportunities(initialOpportunitiesUrl);
 
     const data = outreachCalls;
     console.log(data);
 
     // start paginating
-    let url = data.links.next;
+    let url = data?.links?.next;
     let pageData = '';
     console.log('checking');
     if (url) {
@@ -103,7 +114,7 @@ const BasicForm = () => {
   // this runs the first time the page loads and runs the report
   useEffect(() => {
     runReport();
-  }, []);
+  }, [selectedDates]);
 
   useEffect(() => {
     if (allTeamData && allTeamOpportunities) {
@@ -128,6 +139,16 @@ const BasicForm = () => {
         <Option value="2">Cameron</Option>
         <Option value="3">Mikey</Option>
       </Select>
+      <DatePicker.RangePicker 
+      allowClear={false}
+      disabledDate={(current) => current && current > moment().endOf('day')}
+      ranges={{
+        Today: [moment(), moment()],
+        'This Week':  [moment().startOf('week'), moment().endOf('week')],
+        'This Month': [moment().startOf('month'), moment().endOf('month')]}}
+        defaultValue={selectedDates}  style={{marginLeft: 24}} onChange={(dates) => {
+        setSelectedDates(dates)
+        setRepData(starterRepData)}} />
       <Row gutter={16}>
         <Col span={8}>
           <Card bordered={false}>
