@@ -70,12 +70,14 @@ export default defineConfig({
             },
           ],
         },
+
         {
           path: '/',
           component: '../layouts/BasicLayout',
           authority: ['admin', 'user'],
           routes: [
             { path: '/', redirect: '/dashboard' },
+            { path: '/auth', component: './auth' },
             {
               name: 'Dashboard',
               icon: 'smile',

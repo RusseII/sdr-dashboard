@@ -74,20 +74,6 @@ const BasicLayout = (props) => {
    * constructor
    */
 
-  const urlParams = new URLSearchParams(location.search);
-  const code = urlParams.get('code');
-
-  if (code) {
-    fetch(`/api/get-token?code=${code}`)
-      .then((r) => r.json())
-      .then((r) => {
-        localStorage.setItem('outreachKey', r.access_token);
-        window.location.href = window.location.origin + window.location.pathname;
-      });
-
-    return 'Loading';
-  }
-
   /**
    * init variables
    */
