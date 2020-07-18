@@ -7,11 +7,16 @@ const outreachUrl = 'https://cors-anywhere.herokuapp.com/';
 // const access_token = localStorage.getItem('outreachKey')
 
 const headers = () => {
-  const testToken =
-    'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJydXNzZWxsQGRlZXBoaXJlLmNvbSIsImlhdCI6MTU5NTA5MjMwMiwiZXhwIjoxNTk1MDk5NTAyLCJiZW50byI6ImFwcDJiIiwib3JnX3VzZXJfaWQiOjQsImF1ZCI6IkRlZXBIaXJlIiwic2NvcGVzIjoiQUJBQVFBPT0ifQ.RRJINR91eHy_V2d1J-A_FzcBtYk5s4HPYXHnn1o00Cg';
   const realToken = localStorage.getItem('outreachKey');
+
+  if (!realToken)
+    window.open(
+      'https://api.outreach.io/oauth/authorize?client_id=csijgHr1EAq6YIJ2rRne5WGWVnUuL0_t_bRu1HIf2Ho&redirect_uri=https://a.deephire.com/outreach&response_type=code&scope=accounts.all+calls.all+opportunities.all',
+      '_self',
+    );
+
   return {
-    authorization: `Bearer ${realToken || testToken}`,
+    authorization: `Bearer ${realToken}`,
     'Content-Type': 'application/vnd.api+json',
   };
 };
