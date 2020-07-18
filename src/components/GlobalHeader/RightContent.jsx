@@ -24,7 +24,7 @@ const GlobalHeaderRight = props => {
 
   return (
     <div className={className}>
-      <HeaderSearch
+      {/* <HeaderSearch
         className={`${styles.action} ${styles.search}`}
         placeholder="站内搜索"
         defaultValue="umi ui"
@@ -66,7 +66,7 @@ const GlobalHeaderRight = props => {
           <Tag color={ENVTagColor[REACT_APP_ENV]}>{REACT_APP_ENV}</Tag>
         </span>
       )}
-      <SelectLang className={styles.action} />
+      <SelectLang className={styles.action} /> */}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 /**
- * Ant Design Pro v4 use `@ant-design/pro-layout` to handle Layout.
+ * DeepHire Sales v4 use `@ant-design/pro-layout` to handle Layout.
  * You can view component api by:
  * https://github.com/ant-design/ant-design-pro-layout
  */
@@ -37,27 +37,27 @@ const menuDataRender = (menuList) =>
 
 const defaultFooterDom = (
   <DefaultFooter
-    copyright="2019 蚂蚁金服体验技术部出品"
     links={[
       {
-        key: 'Ant Design Pro',
-        title: 'Ant Design Pro',
-        href: 'https://pro.ant.design',
+        key: 'DeepHire',
+        title: 'DeepHire',
+        href: 'https://deephire.com',
         blankTarget: true,
       },
       {
         key: 'github',
         title: <GithubOutlined />,
-        href: 'https://github.com/ant-design/ant-design-pro',
+        href: 'https://github.com/russeii/recruiter.deephire.com',
         blankTarget: true,
       },
       {
-        key: 'Ant Design',
-        title: 'Ant Design',
-        href: 'https://ant.design',
+        key: 'Recruiter App',
+        title: 'Recruiter App',
+        href: 'https://recruiter.deephire.com',
         blankTarget: true,
       },
     ]}
+    copyright={`${new Date().getFullYear()} DeepHire Sales`}
   />
 );
 

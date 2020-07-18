@@ -11,7 +11,7 @@ export default {
   menu: {
     locale: true,
   },
-  title: 'Ant Design Pro',
+  title: 'DeepHire Sales',
   pwa: false,
   iconfontUrl: '',
 };

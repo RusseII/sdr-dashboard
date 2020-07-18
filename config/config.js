@@ -72,40 +72,15 @@ export default defineConfig({
         {
           path: '/',
           component: '../layouts/BasicLayout',
-          Routes: ['src/pages/Authorized'],
           authority: ['admin', 'user'],
           routes: [
             {
-              path: '/form',
-              icon: 'form',
-              name: 'form',
-              routes: [
-                {
-                  name: 'basic-form',
-                  icon: 'smile',
-                  path: '/form/basic-form',
-                  component: './form/basic-form',
-                },
-                {
-                  name: 'step-form',
-                  icon: 'smile',
-                  path: '/form/step-form',
-                  component: './form/step-form',
-                },
-                {
-                  name: 'advanced-form',
-                  icon: 'smile',
-                  path: '/form/advanced-form',
-                  component: './form/advanced-form',
-                },
-              ],
-            },
-            
-            {
-              path: '/',
-              redirect: '/dashboard/analysis',
-              authority: ['admin', 'user'],
-            },
+                    name: 'Dashboard',
+                    icon: 'smile',
+                    path: '/dashboard',
+                    component: './dashboard/',
+                   },
+          
             {
               component: '404',
             },
