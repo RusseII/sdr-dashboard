@@ -176,7 +176,7 @@ const BasicForm = () => {
 
      
 
-      {filteredData.map((user, index) =>  <Card style={{marginBottom: 24}} title={<Space><Avatar style={{marginRight: 8}}  src={photos[user?.attributes?.email]} /> <>{user?.attributes?.name}</> {index === 0 ? <CrownTwoTone twoToneColor='gold' /> : null}</Space>}>
+      {filteredData.map((user, index) =>  <Card style={{marginBottom: 24}} title={<Space><Avatar  src={photos[user?.attributes?.email]} /> <>{user?.attributes?.name}</> {index === 0 ? <CrownTwoTone twoToneColor='gold' /> : null}</Space>}>
         <Row gutter={[24,24]}>
         <Col span={8}>
           
