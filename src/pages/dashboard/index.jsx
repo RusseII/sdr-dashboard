@@ -1,5 +1,6 @@
-import { Button, Card, Row, Col, Statistic, Select, Skeleton, DatePicker } from 'antd';
+import { Button, Card, Row, Col, Statistic, Select, Skeleton, DatePicker, Avatar, Space } from 'antd';
 
+import { CrownTwoTone } from '@ant-design/icons';
 import { connect } from 'umi';
 import React, { useState, useEffect } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -10,58 +11,79 @@ import {
   getOutreachDispositions,
   getOutreachOpportunities,
 } from '@/services/api';
+
+import russell from '@/assets/russell_photo.jpg';
+import will from '@/assets/will.jpeg';
+import steve from '@/assets/steve.jpeg';
+import mike from '@/assets/mike.jpeg';
+
+
 import allTeamData1 from './data.json';
 
 
 
+const photos = {
+  'russell@deephire.com': russell,
+  'steven@deephire.com': steve,
+  'will@deephire.com': will,
+  'mike@deephire.com': mike,
 
-const starterRepData = { calls: null, appointments: null, dispositions: null }
-
-
+}
 // format('YYYY-MM-DD')
-
 
 const { Option } = Select;
 
 const BasicForm = () => {
-  const [repData, setRepData] = useState(starterRepData);
-  const [selectedUser, setSelectedUser] = useState(2);
-  const [allTeamData, setAllTeamData] = useState(allTeamData1);
+  const [users, setUsers] = useState([{},{},{},{}])
+  const [loading, setLoading] = useState(false)
+  // const [selectedUser, setSelectedUser] = useState(2);
+  const [allTeamData, setAllTeamData] = useState({});
   const [allTeamOpportunities, setAllTeamOpportunities] = useState(null);
-  const [selectedDates, setSelectedDates] = useState([moment().startOf('week'), moment()])
- 
-  const updateDashboard = (userId) => {
-    let selectedRepData = []
-    let selectedRepDataOpportunities = []
-    console.log(`${userId}HELLO`);
+  const [selectedDates, setSelectedDates] = useState([moment().startOf('week'), moment()]);
+
+
+  const filterUser = (userId) => {
+    let selectedRepData = [];
+    let selectedRepDataOpportunities = [];
 
     if (allTeamData?.data) {
       selectedRepData = allTeamData.data.filter(
-        (val) => val.relationships.user.data.id === parseInt(userId, 10),
+        (val) => val.relationships.user?.data.id === parseInt(userId, 10),
       );
     }
 
     // the error you were getting was due to allTeamOpportunities.data sometimes being undefined. Then you would get error (can't use .filter on undefined)
     // this would happen the first time updateDashboard got ran
     if (allTeamOpportunities?.data) {
-        selectedRepDataOpportunities = allTeamOpportunities.data.filter(
+      selectedRepDataOpportunities = allTeamOpportunities.data.filter(
         (val) => val.relationships.creator.data.id === parseInt(userId, 10),
-      )
+      );
     }
 
-    const calls = selectedRepData.length
-    const appointments = selectedRepDataOpportunities.length
-    setRepData({ ...repData, calls, appointments, dispositions: 0 });
+    const calls = selectedRepData.length;
+    const appointments = selectedRepDataOpportunities.length;
+    // setRepData({ ...repData, calls, appointments, dispositions: 0 });
+
+    return {calls, appointments, dispositions: 0 }
   };
 
+  const filteredData = users.map(r => ({...r, repData: filterUser(r.id)})).sort((a,b) => b.repData.calls - a.repData.calls)
+
+
   const runReport = async () => {
+    setLoading(true)
     console.log('HELLO');
-    const initialCallsUrl = `https://api.outreach.io/api/v2/calls?filter[updatedAt]=${selectedDates[0].format('YYYY-MM-DD')}..${selectedDates[1].format('YYYY-MM-DD')}&page[limit]=1000`;
+    const initialCallsUrl = `https://api.outreach.io/api/v2/calls?filter[updatedAt]=${selectedDates[0].format(
+      'YYYY-MM-DD',
+    )}..${selectedDates[1].format('YYYY-MM-DD')}&page[limit]=1000`;
     const outreachCalls = await getOutreachCalls(initialCallsUrl);
     // const initialDispositionsUrl = `https://api.outreach.io/api/v2/callDispositions`;
     // const outreachDispositions = await getOutreachDispositions(initialDispositionsUrl);
-    const initialOpportunitiesUrl = `https://api.outreach.io/api/v2/opportunities?filter[createdAt]=${selectedDates[0].format('YYYY-MM-DD')}..${selectedDates[1].format('YYYY-MM-DD')}&page[limit]=1000`;
+    const initialOpportunitiesUrl = `https://api.outreach.io/api/v2/opportunities?filter[createdAt]=${selectedDates[0].format(
+      'YYYY-MM-DD',
+    )}..${selectedDates[1].format('YYYY-MM-DD')}&page[limit]=1000`;
     const outreachOpportunities = await getOutreachOpportunities(initialOpportunitiesUrl);
+
 
     const data = outreachCalls;
     console.log(data);
@@ -103,6 +125,7 @@ const BasicForm = () => {
     console.log(dataOpps); */
     setAllTeamData(data);
     setAllTeamOpportunities(dataOpps);
+    setLoading(false)
 
     // updateDashboard(2);
 
@@ -111,67 +134,77 @@ const BasicForm = () => {
     // setRepData(data.meta.count);
   };
 
-  // this runs the first time the page loads and runs the report
-  useEffect(() => {
-    runReport();
-  }, [selectedDates]);
 
   useEffect(() => {
-    if (allTeamData && allTeamOpportunities) {
-      updateDashboard(selectedUser);
+    const getUsers = async () => {
+      // haha this function name is so dumb
+      const allUsers = await getOutreachOpportunities('https://api.outreach.io/api/v2/users')
+      setUsers(allUsers.data)
     }
-  }, [selectedUser, allTeamData, allTeamOpportunities]);
+  getUsers()
+  }, []);
+
+
+  // this runs the first time the page loads and runs the report
+  useEffect(() => {
+    if (users[0]) {
+    
+    runReport();
+    }
+  }, [selectedDates]);
+
 
   return (
     <PageHeaderWrapper
       extraContent={
-        <Button type="primary" onClick={runReport}>
-          Refresh!!!
-        </Button>
+        <DatePicker.RangePicker
+        allowClear={false}
+        disabledDate={(current) => current && current > moment().endOf('day')}
+        ranges={{
+          Today: [moment(), moment()],
+          'This Week': [moment().startOf('week'), moment().endOf('week')],
+          'This Month': [moment().startOf('month'), moment().endOf('month')],
+        }}
+        defaultValue={selectedDates}
+        onChange={(dates) => {
+          setSelectedDates(dates);
+        }}
+      />
       }
       content="Check in on your progress each day to your goal. "
     >
-      <Select
-        defaultValue="Cameron"
-        style={{ width: 120, marginBottom: 24 }}
-        onChange={setSelectedUser}
-      >
-        <Option value="2">Cameron</Option>
-        <Option value="3">Mikey</Option>
-      </Select>
-      <DatePicker.RangePicker 
-      allowClear={false}
-      disabledDate={(current) => current && current > moment().endOf('day')}
-      ranges={{
-        Today: [moment(), moment()],
-        'This Week':  [moment().startOf('week'), moment().endOf('week')],
-        'This Month': [moment().startOf('month'), moment().endOf('month')]}}
-        defaultValue={selectedDates}  style={{marginLeft: 24}} onChange={(dates) => {
-        setSelectedDates(dates)
-        setRepData(starterRepData)}} />
-      <Row gutter={16}>
+
+     
+
+      {filteredData.map((user, index) =>  <Card style={{marginBottom: 24}} title={<Space><Avatar style={{marginRight: 8}}  src={photos[user?.attributes?.email]} /> <>{user?.attributes?.name}</> {index === 0 ? <CrownTwoTone twoToneColor='gold' /> : null}</Space>}>
+        <Row gutter={[24,24]}>
         <Col span={8}>
-          <Card bordered={false}>
-            <Skeleton active loading={!repData.calls && repData.calls !== 0}>
-            <Statistic title="Calls Made" value={repData.calls} />
+          
+            <Skeleton active loading={loading}>
+              <Statistic title="Calls Made" value={user?.repData?.calls} />
             </Skeleton>
-          </Card>
+         
         </Col>
         <Col span={8}>
-          <Card bordered={false}>
-          <Skeleton active loading={!repData.appointments && repData.appointments !==0 }>
-            <Statistic title="Appointments Set" value={repData.appointments} />
+          
+            <Skeleton active loading={loading}>
+              <Statistic title="Appointments Set" value={user?.repData?.appointments} />
             </Skeleton>
-          </Card>
+         
         </Col>
         <Col span={8}>
-          <Card bordered={false}>
-          <Skeleton active loading={!repData.dispositions && repData.dispositions !== 0}>
-            <Statistic title="Dispositions" value={repData.dispositions} />
+          
+            <Skeleton active loading={loading}>
+              <Statistic title="Dispositions" value={user?.repData?.dispositions} />
             </Skeleton>
-          </Card>
+           
+          
         </Col>
       </Row>
+      </Card>)}
+     
+
+      
     </PageHeaderWrapper>
   );
 };

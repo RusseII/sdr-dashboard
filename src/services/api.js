@@ -6,15 +6,14 @@ import request from '@/utils/request';
 const outreachUrl = 'https://cors-anywhere.herokuapp.com/';
 // const access_token = localStorage.getItem('outreachKey')
 
-
-// localStorage.setItem('outreachKey','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJydXNzZWxsQGRlZXBoaXJlLmNvbSIsImlhdCI6MTU5NTEwNjY4NCwiZXhwIjoxNTk1MTEzODg0LCJiZW50byI6ImFwcDJiIiwib3JnX3VzZXJfaWQiOjQsImF1ZCI6IkRlZXBIaXJlIiwic2NvcGVzIjoiQUJBQVFBR0EifQ.8jrpxFD0RE3T4rE_E9fRho_-mw2pL95_XupoPdl_Ye0')
+// localStorage.setItem('outreachKey','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJydXNzZWxsQGRlZXBoaXJlLmNvbSIsImlhdCI6MTU5NTEwOTcyMSwiZXhwIjoxNTk1MTE2OTIxLCJiZW50byI6ImFwcDJiIiwib3JnX3VzZXJfaWQiOjQsImF1ZCI6IkRlZXBIaXJlIiwic2NvcGVzIjoiQUJBQVFBR0FBUEE9In0.7_TseswFHRBy2bRYMw4cNPqZqGGQ1ZKHFVfSsv1nn3U')
 
 const headers = () => {
   const realToken = localStorage.getItem('outreachKey');
 
   if (!realToken)
     window.open(
-      'https://api.outreach.io/oauth/authorize?client_id=csijgHr1EAq6YIJ2rRne5WGWVnUuL0_t_bRu1HIf2Ho&redirect_uri=https://a.deephire.com/outreach&response_type=code&scope=accounts.all+calls.all+opportunities.all',
+      'https://api.outreach.io/oauth/authorize?client_id=csijgHr1EAq6YIJ2rRne5WGWVnUuL0_t_bRu1HIf2Ho&redirect_uri=https://a.deephire.com/outreach&response_type=code&scope=accounts.all+calls.all+opportunities.all+users.all',
       '_self',
     );
 
@@ -30,3 +29,5 @@ export const getOutreachDispositions = async (url) =>
   request(`${outreachUrl}${url}`, { headers: headers() });
 export const getOutreachOpportunities = async (url) =>
   request(`${outreachUrl}${url}`, { headers: headers() });
+
+
