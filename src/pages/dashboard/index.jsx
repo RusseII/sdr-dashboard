@@ -1,4 +1,4 @@
-import { Button, Card, Row, Col, Statistic, Select } from 'antd';
+import { Button, Card, Row, Col, Statistic, Select, Skeleton } from 'antd';
 
 import { connect } from 'umi';
 import React, { useState, useEffect } from 'react';
@@ -14,7 +14,7 @@ import allTeamData1 from './data.json';
 const { Option } = Select;
 
 const BasicForm = () => {
-  const [repData, setRepData] = useState({ calls: 0, appointments: 0 });
+  const [repData, setRepData] = useState({ calls: null, appointments: null, dispositions: null });
   const [selectedUser, setSelectedUser] = useState(2);
   const [allTeamData, setAllTeamData] = useState(allTeamData1);
   const [allTeamOpportunities, setAllTeamOpportunities] = useState(null);
@@ -40,7 +40,7 @@ const BasicForm = () => {
 
     const calls = selectedRepData.length
     const appointments = selectedRepDataOpportunities.length
-    setRepData({ ...repData, calls, appointments });
+    setRepData({ ...repData, calls, appointments, dispositions: 0 });
   };
 
   const runReport = async () => {
@@ -131,17 +131,23 @@ const BasicForm = () => {
       <Row gutter={16}>
         <Col span={8}>
           <Card bordered={false}>
+            <Skeleton active loading={!repData.calls && repData.calls !== 0}>
             <Statistic title="Calls Made" value={repData.calls} />
+            </Skeleton>
           </Card>
         </Col>
         <Col span={8}>
           <Card bordered={false}>
+          <Skeleton active loading={!repData.appointments && repData.appointments !==0 }>
             <Statistic title="Appointments Set" value={repData.appointments} />
+            </Skeleton>
           </Card>
         </Col>
         <Col span={8}>
           <Card bordered={false}>
+          <Skeleton active loading={!repData.dispositions && repData.dispositions !== 0}>
             <Statistic title="Dispositions" value={repData.dispositions} />
+            </Skeleton>
           </Card>
         </Col>
       </Row>
