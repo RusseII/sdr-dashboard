@@ -45,11 +45,11 @@ const BasicForm = () => {
 
   const runReport = async () => {
     console.log('HELLO');
-    const initialCallsUrl = `https://api.outreach.io/api/v2/calls?filter[updatedAt]=2020-06-02..inf`;
+    const initialCallsUrl = `https://api.outreach.io/api/v2/calls?filter[updatedAt]=2020-06-02..inf&page[limit]=1000`;
     const outreachCalls = await getOutreachCalls(initialCallsUrl);
     // const initialDispositionsUrl = `https://api.outreach.io/api/v2/callDispositions`;
     // const outreachDispositions = await getOutreachDispositions(initialDispositionsUrl);
-    const initialOpportunitiesUrl = `https://api.outreach.io/api/v2/opportunities?filter[createdAt]=2020-06-02..inf`;
+    const initialOpportunitiesUrl = `https://api.outreach.io/api/v2/opportunities?filter[createdAt]=2020-06-02..inf&page[limit]=1000`;
     const outreachOpportunities = await getOutreachOpportunities(initialOpportunitiesUrl);
 
     const data = outreachCalls;
