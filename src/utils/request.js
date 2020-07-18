@@ -30,6 +30,12 @@ const errorHandler = (error) => {
   const { response } = error;
 
   if (response && response.status) {
+    if (response.status === 401) {
+      window.open(
+        'https://api.outreach.io/oauth/authorize?client_id=csijgHr1EAq6YIJ2rRne5WGWVnUuL0_t_bRu1HIf2Ho&redirect_uri=https://a.deephire.com/outreach&response_type=code&scope=accounts.all+calls.all',
+        '_self',
+      );
+    }
     const errorText = codeMessage[response.status] || response.statusText;
     const { status, url } = response;
     notification.error({

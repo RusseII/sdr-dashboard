@@ -4,8 +4,8 @@
  * https://github.com/ant-design/ant-design-pro-layout
  */
 import ProLayout, { DefaultFooter, SettingDrawer } from '@ant-design/pro-layout';
-import React, { useEffect } from 'react';
-import { Link, useIntl, connect } from 'umi';
+import React from 'react';
+import { Link, connect } from 'umi';
 import { GithubOutlined } from '@ant-design/icons';
 import { Result, Button } from 'antd';
 import Authorized from '@/utils/Authorized';
@@ -29,8 +29,8 @@ const noMatch = (
 /**
  * use Authorized check all menu item
  */
-const menuDataRender = menuList =>
-  menuList.map(item => {
+const menuDataRender = (menuList) =>
+  menuList.map((item) => {
     const localItem = { ...item, children: item.children ? menuDataRender(item.children) : [] };
     return Authorized.check(item.authority, localItem, null);
   });
@@ -61,7 +61,7 @@ const defaultFooterDom = (
   />
 );
 
-const BasicLayout = props => {
+const BasicLayout = (props) => {
   const {
     dispatch,
     children,
@@ -74,18 +74,25 @@ const BasicLayout = props => {
    * constructor
    */
 
-  useEffect(() => {
-    if (dispatch) {
-      dispatch({
-        type: 'user/fetchCurrent',
+  const urlParams = new URLSearchParams(location.search);
+  const code = urlParams.get('code');
+
+  if (code) {
+    fetch(`/api/get-token?code=${code}`)
+      .then((r) => r.json())
+      .then((r) => {
+        localStorage.setItem('outreachKey', r.access_token);
+        window.location.href = window.location.origin + window.location.pathname;
       });
-    }
-  }, []);
+
+    return 'Loading';
+  }
+
   /**
    * init variables
    */
 
-  const handleMenuCollapse = payload => {
+  const handleMenuCollapse = (payload) => {
     if (dispatch) {
       dispatch({
         type: 'global/changeLayoutCollapsed',
@@ -97,12 +104,10 @@ const BasicLayout = props => {
   const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
     authority: undefined,
   };
-  const { formatMessage } = useIntl();
   return (
     <>
       <ProLayout
         logo={logo}
-        formatMessage={formatMessage}
         menuHeaderRender={(logoDom, titleDom) => (
           <Link to="/">
             {logoDom}
@@ -120,9 +125,7 @@ const BasicLayout = props => {
         breadcrumbRender={(routers = []) => [
           {
             path: '/',
-            breadcrumbName: formatMessage({
-              id: 'menu.home',
-            }),
+            breadcrumbName: 'Home',
           },
           ...routers,
         ]}
@@ -146,7 +149,7 @@ const BasicLayout = props => {
       </ProLayout>
       <SettingDrawer
         settings={settings}
-        onSettingChange={config =>
+        onSettingChange={(config) =>
           dispatch({
             type: 'settings/changeSetting',
             payload: config,
