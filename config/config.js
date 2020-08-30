@@ -84,6 +84,12 @@ export default defineConfig({
               path: '/dashboard',
               component: './dashboard/',
             },
+            {
+              name: 'Pipeline',
+              icon: 'smile',
+              path: '/pipeline',
+              component: './pipeline/',
+            },
 
             {
               component: '404',
